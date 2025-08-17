@@ -120,7 +120,11 @@ async def query_agent(
             response=response,
             tools_used=tools_used
         )
-
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error processing query: {str(e)}"
+        )
 
 @app.post("/a2a", response_model=A2AResponse)
 async def agent_to_agent(
