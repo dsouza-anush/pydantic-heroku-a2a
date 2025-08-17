@@ -94,9 +94,13 @@ async def query_agent(
         response = agent.run(request.query)
         
         # Return the response
+        tools_used = []
+        if hasattr(agent, 'tools'):
+            tools_used = [tool.name for tool in agent.tools]
+        
         return QueryResponse(
             response=response,
-            tools_used=[tool.name for tool in agent.tools]
+            tools_used=tools_used
         )
     except Exception as e:
         raise HTTPException(
