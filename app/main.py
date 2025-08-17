@@ -91,7 +91,7 @@ async def query_agent(
             agent = create_heroku_agent()
         
         # Process the query
-        response = agent.run(request.query)
+        response = await agent.run(request.query)
         
         # Return the response
         tools_used = []

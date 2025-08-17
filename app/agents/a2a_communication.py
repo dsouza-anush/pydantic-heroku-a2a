@@ -18,7 +18,7 @@ class ResearchOutput(BaseModel):
     summary: str = Field(..., description="Summary of the research findings")
     source_agent: str = Field(..., description="Name of the agent that provided the research")
 
-def research_function(topic: str, context: Optional[str] = None) -> Dict[str, Any]:
+async def research_function(topic: str, context: Optional[str] = None) -> Dict[str, Any]:
     """
     Research a topic using a specialized research agent.
     
@@ -38,7 +38,7 @@ def research_function(topic: str, context: Optional[str] = None) -> Dict[str, An
         prompt += f"\n\nContext: {context}"
     
     # Send the prompt to the research agent
-    response = research_agent.agent.run(prompt)
+    response = await research_agent.agent.run(prompt)
     
     # Return the research results
     return {
@@ -53,7 +53,7 @@ research_tool = Tool(
     function=research_function
 )
 
-def demonstrate_a2a_communication(query: str, context: Optional[str] = None) -> Dict[str, Any]:
+async def demonstrate_a2a_communication(query: str, context: Optional[str] = None) -> Dict[str, Any]:
     """Demonstrate communication between a main agent and a research agent.
     
     Args:
@@ -72,7 +72,7 @@ def demonstrate_a2a_communication(query: str, context: Optional[str] = None) -> 
     
     # Process the query with the main agent
     # This will potentially invoke the research tool, which will communicate with the research agent
-    response = main_agent.run(
+    response = await main_agent.run(
         f"I need information about '{query}'. {context or ''} Use the research tool if needed."
     )
     
