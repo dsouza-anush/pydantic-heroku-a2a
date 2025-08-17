@@ -10,6 +10,7 @@ from pydantic import BaseModel
 from app.config import INFERENCE_API_KEY
 from app.agents.heroku_agent import create_heroku_agent
 from app.tools.registry import tool_registry
+from app.agents.a2a_communication import demonstrate_a2a_communication
 
 app = FastAPI(
     title="Heroku Pydantic AI Demo",
@@ -26,6 +27,17 @@ class QueryResponse(BaseModel):
     """Response model for agent queries."""
     response: str
     tools_used: Optional[List[str]] = None
+
+class A2ARequest(BaseModel):
+    """Request model for agent-to-agent communication."""
+    query: str
+    context: Optional[str] = None
+
+class A2AResponse(BaseModel):
+    """Response model for agent-to-agent communication."""
+    query: str
+    context: Optional[str]
+    response: str
 
 async def verify_api_key(x_api_key: str = Header(None)):
     """Verify the API key.
@@ -107,6 +119,30 @@ async def query_agent(
         return QueryResponse(
             response=response,
             tools_used=tools_used
+        )
+
+@app.post("/a2a", response_model=A2AResponse)
+async def agent_to_agent(
+    request: A2ARequest,
+    _: bool = Depends(verify_api_key)
+):
+    """Demonstrate agent-to-agent communication.
+    
+    Args:
+        request: The a2a request
+        
+    Returns:
+        The result of agent-to-agent communication
+    """
+    try:
+        # Call the a2a demonstration function
+        result = await demonstrate_a2a_communication(request.query, request.context)
+        
+        return A2AResponse(**result)
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error processing A2A request: {str(e)}"
         )
     except Exception as e:
         raise HTTPException(
