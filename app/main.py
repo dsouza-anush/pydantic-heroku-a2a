@@ -77,9 +77,9 @@ async def query_agent(
         requested_tools = []
         if request.tools:
             for tool_name in request.tools:
-                tool_class = tool_registry.get_tool_by_name(tool_name)
-                if tool_class:
-                    requested_tools.append(tool_class())
+                tool = tool_registry.get_tool_by_name(tool_name)
+                if tool:
+                    requested_tools.append(tool)
             
             # Create an agent with only the requested tools
             agent = create_heroku_agent(
