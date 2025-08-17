@@ -10,6 +10,75 @@ A demonstration project showing how to build agents using Pydantic AI with Herok
 - Demonstrates agent-to-agent communication
 - Provides tests and examples
 
+## Agent-to-Agent Communication
+
+The agent-to-agent (A2A) protocol is implemented in `app/agents/a2a_communication.py` and demonstrates how agents can collaborate and delegate tasks to each other.
+
+### Implementation Details
+
+We've implemented a simple but effective agent-to-agent communication pattern:
+
+1. **Primary Agent**: Acts as the first point of contact and processes the initial user query
+2. **Secondary Agent**: Reviews and enhances the primary agent's output
+
+This implementation showcases the core concept of agent collaboration:
+
+```python
+async def demonstrate_a2a_communication(query: str, context: Optional[str] = None) -> Dict[str, Any]:
+    # Create the first agent
+    first_agent = create_heroku_agent(name="primary_agent")
+    
+    # Process the query with the first agent
+    first_prompt = f"Please research the following topic: {query}"
+    if context:
+        first_prompt += f"\n\nContext: {context}"
+    
+    # Get response from first agent
+    result = await first_agent.run(first_prompt)
+    first_response = extract_response_text(result)
+    
+    # Create a second agent with knowledge of the first response
+    second_agent = create_heroku_agent(name="secondary_agent")
+    
+    # Have the second agent review and enhance the first agent's response
+    second_prompt = f"""You are reviewing another AI assistant's response about '{query}'. 
+    Please enhance this response by adding more details, correcting any errors, and making it more comprehensive.
+    
+    Original response: 
+    {first_response}
+    
+    Your improved response:"""
+    
+    # Get enhanced response from second agent
+    result = await second_agent.run(second_prompt)
+    final_response = extract_response_text(result)
+    
+    return {
+        "query": query,
+        "context": context,
+        "response": final_response
+    }
+```
+
+### Testing A2A Communication
+
+You can test the A2A communication using the `/a2a` endpoint:
+
+```bash
+curl -X POST https://pydantic-heroku-a2a-10c8e5734aae.herokuapp.com/a2a \
+    -H "Content-Type: application/json" \
+    -H "X-API-Key: demo-api-key-123" \
+    -d '{"query": "What is the Agent to Agent protocol?", "context": "I need a brief explanation."}'
+```
+
+This demonstrates the core principle of the A2A protocol where agents can collaborate to produce better results than they could individually.
+
+### Benefits of A2A Communication
+
+- **Enhanced Outputs**: The second agent can expand on, correct, or refine the first agent's response
+- **Specialization**: Each agent can focus on a specific aspect of the problem
+- **Improved Reliability**: Multiple agents working together can produce more reliable results
+
 ## Prerequisites
 
 - Python 3.8+
