@@ -57,6 +57,6 @@ calculator_tool = Tool(
     name="calculator",
     description="Evaluates mathematical expressions",
     function=calculator_function,
-    input_model=CalculateInput,
-    output_model=CalculateOutput
+    input=CalculateInput,
+    output=CalculateOutput
 )

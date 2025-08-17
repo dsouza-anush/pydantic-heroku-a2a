@@ -51,8 +51,8 @@ research_tool = Tool(
     name="research",
     description="Delegate research tasks to a specialized research agent",
     function=research_function,
-    input_model=ResearchInput,
-    output_model=ResearchOutput
+    input=ResearchInput,
+    output=ResearchOutput
 )
 
 def demonstrate_a2a_communication(query: str, context: Optional[str] = None) -> Dict[str, Any]:

@@ -106,6 +106,6 @@ search_tool = Tool(
     name="search",
     description="Search for information on the web",
     function=search_function,
-    input_model=SearchInput,
-    output_model=SearchOutput
+    input=SearchInput,
+    output=SearchOutput
 )
