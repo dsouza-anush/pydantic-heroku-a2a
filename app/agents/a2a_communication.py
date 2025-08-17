@@ -38,7 +38,13 @@ async def research_function(topic: str, context: Optional[str] = None) -> Dict[s
         prompt += f"\n\nContext: {context}"
     
     # Send the prompt to the research agent
-    response = await research_agent.agent.run(prompt)
+    result = await research_agent.agent.run(prompt)
+    
+    # Extract the response string from the result
+    if hasattr(result, 'output'):
+        response = result.output
+    else:
+        response = str(result)
     
     # Return the research results
     return {
@@ -72,9 +78,15 @@ async def demonstrate_a2a_communication(query: str, context: Optional[str] = Non
     
     # Process the query with the main agent
     # This will potentially invoke the research tool, which will communicate with the research agent
-    response = await main_agent.run(
+    result = await main_agent.run(
         f"I need information about '{query}'. {context or ''} Use the research tool if needed."
     )
+    
+    # Extract the response string from the result
+    if hasattr(result, 'output'):
+        response = result.output
+    else:
+        response = str(result)
     
     return {
         "query": query,

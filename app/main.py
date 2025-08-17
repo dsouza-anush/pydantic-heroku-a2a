@@ -91,7 +91,13 @@ async def query_agent(
             agent = create_heroku_agent()
         
         # Process the query
-        response = await agent.run(request.query)
+        result = await agent.run(request.query)
+        
+        # Extract the response string from the result
+        if hasattr(result, 'output'):
+            response = result.output
+        else:
+            response = str(result)
         
         # Return the response
         tools_used = []
