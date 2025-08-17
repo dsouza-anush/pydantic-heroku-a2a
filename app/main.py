@@ -145,8 +145,3 @@ async def agent_to_agent(
             status_code=500,
             detail=f"Error processing A2A request: {str(e)}"
         )
-    except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Error processing query: {str(e)}"
-        )
