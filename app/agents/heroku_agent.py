@@ -1,40 +1,23 @@
 """
-Implementation of a Heroku-backed agent using the A2A Python SDK.
+Implementation of a Heroku-backed agent using Pydantic AI.
 """
 import os
 from typing import List, Dict, Any, Optional
 
-from a2a import Agent, OpenAI, Tool
-from app.config import INFERENCE_API_KEY, MODEL_ID, INFERENCE_URL, DEFAULT_AGENT_NAME
-from app.tools.registry import tool_registry
+from pydantic_ai import Agent
+from pydantic_ai.models.openai import OpenAIModel
+from pydantic_ai.providers.heroku import HerokuProvider
+from pydantic_ai.tools import Tool
 
-class HerokuOpenAI(OpenAI):
-    """Custom OpenAI client that connects to Heroku Inference API."""
-    
-    def __init__(self, api_key: Optional[str] = None, model: str = MODEL_ID):
-        """Initialize the Heroku OpenAI client.
-        
-        Args:
-            api_key: The Heroku Inference API key
-            model: The model ID to use (defaults to config.MODEL_ID)
-        """
-        api_key = api_key or INFERENCE_API_KEY
-        if not api_key:
-            raise ValueError("INFERENCE_API_KEY must be provided")
-            
-        # Initialize with the Heroku Inference API endpoint
-        super().__init__(
-            api_key=api_key,
-            model=model,
-            base_url=f"{INFERENCE_URL}/v1"
-        )
+from app.config import INFERENCE_API_KEY, MODEL_ID, DEFAULT_AGENT_NAME
+from app.tools.registry import tool_registry
 
 def create_heroku_agent(
     name: str = DEFAULT_AGENT_NAME,
     tools: Optional[List[Tool]] = None,
     use_registry_tools: bool = True
 ) -> Agent:
-    """Create a new A2A agent powered by Heroku Inference.
+    """Create a new Pydantic AI agent powered by Heroku Inference.
     
     Args:
         name: The name of the agent
@@ -42,10 +25,17 @@ def create_heroku_agent(
         use_registry_tools: Whether to include tools from the tool registry
         
     Returns:
-        An initialized A2A Agent
+        An initialized Pydantic AI Agent
     """
-    # Create the Heroku OpenAI client
-    client = HerokuOpenAI()
+    # Check if we have an API key
+    if not INFERENCE_API_KEY:
+        raise ValueError("INFERENCE_API_KEY must be provided")
+    
+    # Create the Heroku OpenAI model
+    model = OpenAIModel(
+        MODEL_ID,
+        provider=HerokuProvider(api_key=INFERENCE_API_KEY),
+    )
     
     # Collect all tools
     all_tools = []
@@ -60,8 +50,7 @@ def create_heroku_agent(
     
     # Create and configure the agent
     agent = Agent(
-        name=name,
-        llm=client,
+        model=model,
         tools=all_tools
     )
     

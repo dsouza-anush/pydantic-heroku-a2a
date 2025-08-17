@@ -1,4 +1,4 @@
-a2a-python>=0.5.5
+pydantic-ai>=0.6.0
 pydantic>=2.4.0
 python-dotenv>=1.0.0
 fastapi>=0.100.0

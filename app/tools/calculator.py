@@ -1,10 +1,10 @@
 """
-Simple calculator tool for demonstrating A2A tool usage.
+Simple calculator tool for demonstrating Pydantic AI tool usage.
 """
 import math
 from typing import Dict, Any, Optional
-from a2a import Tool
 from pydantic import BaseModel, Field
+from pydantic_ai.tools import Tool
 
 class CalculateInput(BaseModel):
     """Input model for the calculator tool."""
@@ -23,10 +23,10 @@ class CalculatorTool(Tool):
     
     name: str = "calculator"
     description: str = "Evaluates mathematical expressions"
-    input_schema: type = CalculateInput
-    output_schema: type = CalculateOutput
+    input_model: type = CalculateInput
+    output_model: type = CalculateOutput
     
-    async def execute(self, input_data: CalculateInput) -> CalculateOutput:
+    def execute(self, input_data: CalculateInput) -> CalculateOutput:
         """Execute the calculation.
         
         Args:

@@ -1,15 +1,14 @@
 """
-Demonstration script for Agent-to-Agent (A2A) communication.
+Demonstration script for agent-to-agent communication.
 """
-import asyncio
 from dotenv import load_dotenv
 from app.agents.a2a_communication import demonstrate_a2a_communication
 
 # Load environment variables
 load_dotenv()
 
-async def main():
-    """Run the A2A communication demonstration."""
+def main():
+    """Run the agent-to-agent communication demonstration."""
     print("=== Agent-to-Agent Communication Demonstration ===")
     
     examples = [
@@ -33,7 +32,7 @@ async def main():
         print("-" * 40)
         
         try:
-            result = await demonstrate_a2a_communication(
+            result = demonstrate_a2a_communication(
                 example["query"], 
                 example["context"]
             )
@@ -47,4 +46,4 @@ async def main():
     print("\nA2A communication demonstration completed.")
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()

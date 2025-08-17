@@ -7,13 +7,13 @@ from typing import Dict, List, Any, Optional
 from fastapi import FastAPI, HTTPException, Depends, Header
 from pydantic import BaseModel
 
-from app.config import HEROKU_API_KEY
+from app.config import INFERENCE_API_KEY
 from app.agents.heroku_agent import create_heroku_agent
 from app.tools.registry import tool_registry
 
 app = FastAPI(
-    title="Heroku A2A Demo",
-    description="A demonstration of the Agent-to-Agent protocol using Heroku Inference",
+    title="Heroku Pydantic AI Demo",
+    description="A demonstration of Pydantic AI with Heroku Inference",
     version="0.1.0",
 )
 
@@ -48,7 +48,7 @@ async def verify_api_key(x_api_key: str = Header(None)):
 async def root():
     """Root endpoint."""
     return {
-        "message": "Heroku A2A Demo API",
+        "message": "Heroku Pydantic AI Demo API",
         "available_tools": tool_registry.get_tool_names()
     }
 
@@ -91,7 +91,7 @@ async def query_agent(
             agent = create_heroku_agent()
         
         # Process the query
-        response = await agent.a_run(request.query)
+        response = agent.run(request.query)
         
         # Return the response
         return QueryResponse(
@@ -102,32 +102,4 @@ async def query_agent(
         raise HTTPException(
             status_code=500,
             detail=f"Error processing query: {str(e)}"
-        )
-
-@app.post("/a2a")
-async def agent_to_agent(
-    request: Dict[str, Any],
-    _: bool = Depends(verify_api_key)
-):
-    """Process an A2A protocol request.
-    
-    Args:
-        request: The A2A protocol request
-        
-    Returns:
-        The A2A protocol response
-    """
-    try:
-        # Create an agent
-        agent = create_heroku_agent()
-        
-        # Process the A2A request
-        # This will automatically handle the A2A protocol format
-        response = await agent.a_process_request(request)
-        
-        return response
-    except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Error processing A2A request: {str(e)}"
         )

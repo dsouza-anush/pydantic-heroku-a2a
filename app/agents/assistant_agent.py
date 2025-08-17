@@ -1,9 +1,11 @@
 """
-Implementation of a research assistant agent for A2A demo.
+Implementation of a research assistant agent using Pydantic AI.
 """
 from typing import List, Optional
-from a2a import Agent, OpenAI, Tool
-from app.config import INFERENCE_API_KEY, MODEL_ID, INFERENCE_URL
+from pydantic_ai import Agent
+from pydantic_ai.models.openai import OpenAIModel
+from pydantic_ai.providers.heroku import HerokuProvider
+from app.config import INFERENCE_API_KEY, MODEL_ID
 
 class ResearchAssistantAgent:
     """A research assistant agent that can communicate with our main agent."""
@@ -21,18 +23,15 @@ class ResearchAssistantAgent:
         if not self.api_key:
             raise ValueError("INFERENCE_API_KEY must be provided")
         
-        # Create the OpenAI client for Heroku
-        self.client = OpenAI(
-            api_key=self.api_key,
-            model=MODEL_ID,
-            base_url=f"{INFERENCE_URL}/v1"
+        # Create the OpenAI model with Heroku provider
+        self.model = OpenAIModel(
+            MODEL_ID,
+            provider=HerokuProvider(api_key=self.api_key),
         )
         
         # Create the agent
         self.agent = Agent(
-            name=self.name,
-            llm=self.client,
-            tools=[]  # No tools for the assistant agent
+            model=self.model,
         )
         
         # Set system instructions

@@ -1,9 +1,9 @@
 """
-Mock search tool for demonstrating A2A tool usage.
+Mock search tool for demonstrating Pydantic AI tool usage.
 """
 from typing import List, Dict, Any
-from a2a import Tool
 from pydantic import BaseModel, Field
+from pydantic_ai.tools import Tool
 
 class SearchInput(BaseModel):
     """Input model for the search tool."""
@@ -27,8 +27,8 @@ class SearchTool(Tool):
     
     name: str = "search"
     description: str = "Search for information on the web"
-    input_schema: type = SearchInput
-    output_schema: type = SearchOutput
+    input_model: type = SearchInput
+    output_model: type = SearchOutput
     
     # Mock database of search results
     _mock_results = {
@@ -75,7 +75,7 @@ class SearchTool(Tool):
         ]
     }
     
-    async def execute(self, input_data: SearchInput) -> SearchOutput:
+    def execute(self, input_data: SearchInput) -> SearchOutput:
         """Execute the search.
         
         Args:

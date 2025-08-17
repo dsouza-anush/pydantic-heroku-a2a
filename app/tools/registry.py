@@ -3,7 +3,7 @@ Tool registry for managing available tools.
 """
 from typing import Dict, List, Type, Optional
 
-from a2a import Tool
+from pydantic_ai.tools import Tool
 from app.tools.calculator import CalculatorTool
 from app.tools.search import SearchTool
 

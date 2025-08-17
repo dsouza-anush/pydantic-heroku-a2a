@@ -1,11 +1,11 @@
 """
-Demonstration of Agent-to-Agent (A2A) protocol communication.
+Demonstration of communication between agents using Pydantic AI.
 """
 import asyncio
 from typing import Dict, Any, List, Optional
 from pydantic import BaseModel, Field
+from pydantic_ai.tools import Tool
 
-from a2a import Agent, Tool, AgentMessage
 from app.agents.heroku_agent import create_heroku_agent
 from app.agents.assistant_agent import ResearchAssistantAgent
 
@@ -24,8 +24,8 @@ class ResearchTool(Tool):
     
     name: str = "research"
     description: str = "Delegate research tasks to a specialized research agent"
-    input_schema: type = ResearchInput
-    output_schema: type = ResearchOutput
+    input_model: type = ResearchInput
+    output_model: type = ResearchOutput
     
     def __init__(self):
         """Initialize the research tool."""
@@ -33,7 +33,7 @@ class ResearchTool(Tool):
         # Create the research assistant agent
         self.research_agent = ResearchAssistantAgent()
     
-    async def execute(self, input_data: ResearchInput) -> ResearchOutput:
+    def execute(self, input_data: ResearchInput) -> ResearchOutput:
         """Execute the research task.
         
         Args:
@@ -48,7 +48,7 @@ class ResearchTool(Tool):
             prompt += f"\n\nContext: {input_data.context}"
         
         # Send the prompt to the research agent
-        response = await self.research_agent.agent.a_run(prompt)
+        response = self.research_agent.agent.run(prompt)
         
         # Return the research results
         return ResearchOutput(
@@ -56,15 +56,15 @@ class ResearchTool(Tool):
             source_agent=self.research_agent.name
         )
 
-async def demonstrate_a2a_communication(query: str, context: Optional[str] = None) -> Dict[str, Any]:
-    """Demonstrate A2A communication between a main agent and a research agent.
+def demonstrate_a2a_communication(query: str, context: Optional[str] = None) -> Dict[str, Any]:
+    """Demonstrate communication between a main agent and a research agent.
     
     Args:
         query: The query to process
         context: Optional context for the query
         
     Returns:
-        A dictionary with the results of the A2A communication
+        A dictionary with the results of the communication
     """
     # Create the main agent with the research tool
     research_tool = ResearchTool()
@@ -76,7 +76,7 @@ async def demonstrate_a2a_communication(query: str, context: Optional[str] = Non
     
     # Process the query with the main agent
     # This will potentially invoke the research tool, which will communicate with the research agent
-    response = await main_agent.a_run(
+    response = main_agent.run(
         f"I need information about '{query}'. {context or ''} Use the research tool if needed."
     )
     
