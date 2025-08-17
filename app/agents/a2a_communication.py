@@ -1,7 +1,6 @@
 """
 Demonstration of communication between agents using Pydantic AI.
 """
-import asyncio
 from typing import Dict, Any, List, Optional
 from pydantic import BaseModel, Field
 from pydantic_ai.tools import Tool
@@ -19,42 +18,42 @@ class ResearchOutput(BaseModel):
     summary: str = Field(..., description="Summary of the research findings")
     source_agent: str = Field(..., description="Name of the agent that provided the research")
 
-class ResearchTool(Tool):
-    """A tool that delegates research tasks to a research assistant agent."""
+def research_function(topic: str, context: Optional[str] = None) -> Dict[str, Any]:
+    """
+    Research a topic using a specialized research agent.
     
-    name: str = "research"
-    description: str = "Delegate research tasks to a specialized research agent"
-    input_model: type = ResearchInput
-    output_model: type = ResearchOutput
+    Args:
+        topic: The topic to research
+        context: Additional context or specific questions about the topic
+        
+    Returns:
+        Dictionary with research summary and source agent name
+    """
+    # Create the research assistant agent
+    research_agent = ResearchAssistantAgent()
     
-    def __init__(self):
-        """Initialize the research tool."""
-        super().__init__()
-        # Create the research assistant agent
-        self.research_agent = ResearchAssistantAgent()
+    # Construct the prompt for the research agent
+    prompt = f"Please research the following topic: {topic}"
+    if context:
+        prompt += f"\n\nContext: {context}"
     
-    def execute(self, input_data: ResearchInput) -> ResearchOutput:
-        """Execute the research task.
-        
-        Args:
-            input_data: The research input containing the topic to research
-            
-        Returns:
-            The research results
-        """
-        # Construct the prompt for the research agent
-        prompt = f"Please research the following topic: {input_data.topic}"
-        if input_data.context:
-            prompt += f"\n\nContext: {input_data.context}"
-        
-        # Send the prompt to the research agent
-        response = self.research_agent.agent.run(prompt)
-        
-        # Return the research results
-        return ResearchOutput(
-            summary=response,
-            source_agent=self.research_agent.name
-        )
+    # Send the prompt to the research agent
+    response = research_agent.agent.run(prompt)
+    
+    # Return the research results
+    return {
+        "summary": response,
+        "source_agent": research_agent.name
+    }
+
+# Create a Tool from the function
+research_tool = Tool(
+    name="research",
+    description="Delegate research tasks to a specialized research agent",
+    function=research_function,
+    input_model=ResearchInput,
+    output_model=ResearchOutput
+)
 
 def demonstrate_a2a_communication(query: str, context: Optional[str] = None) -> Dict[str, Any]:
     """Demonstrate communication between a main agent and a research agent.
@@ -67,7 +66,6 @@ def demonstrate_a2a_communication(query: str, context: Optional[str] = None) -> 
         A dictionary with the results of the communication
     """
     # Create the main agent with the research tool
-    research_tool = ResearchTool()
     main_agent = create_heroku_agent(
         name="main_agent",
         tools=[research_tool],

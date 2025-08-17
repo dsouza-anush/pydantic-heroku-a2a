@@ -18,46 +18,45 @@ class CalculateOutput(BaseModel):
     result: float = Field(..., description="The result of the calculation")
     expression: str = Field(..., description="The original expression")
 
-class CalculatorTool(Tool):
-    """A basic calculator tool that can evaluate mathematical expressions."""
+def calculator_function(expression: str) -> Dict[str, Any]:
+    """
+    Calculate the result of a mathematical expression.
     
-    name: str = "calculator"
-    description: str = "Evaluates mathematical expressions"
-    input_model: type = CalculateInput
-    output_model: type = CalculateOutput
+    Args:
+        expression: The expression to evaluate
+        
+    Returns:
+        Dictionary with result and original expression
+    """
+    # Define safe operations
+    safe_dict = {
+        'abs': abs,
+        'round': round,
+        'min': min,
+        'max': max,
+        'sin': math.sin,
+        'cos': math.cos,
+        'tan': math.tan,
+        'sqrt': math.sqrt,
+        'pi': math.pi,
+        'e': math.e,
+    }
     
-    def execute(self, input_data: CalculateInput) -> CalculateOutput:
-        """Execute the calculation.
-        
-        Args:
-            input_data: The calculation input containing the expression to evaluate
-            
-        Returns:
-            The calculation result
-        """
-        # Define safe operations
-        safe_dict = {
-            'abs': abs,
-            'round': round,
-            'min': min,
-            'max': max,
-            'sin': math.sin,
-            'cos': math.cos,
-            'tan': math.tan,
-            'sqrt': math.sqrt,
-            'pi': math.pi,
-            'e': math.e,
-        }
-        
-        # Replace ^ with ** for exponentiation
-        expression = input_data.expression.replace('^', '**')
-        
-        try:
-            # Evaluate the expression in a safe context
-            result = eval(expression, {"__builtins__": {}}, safe_dict)
-            return CalculateOutput(result=float(result), expression=input_data.expression)
-        except Exception as e:
-            return CalculateOutput(
-                result=float('nan'),
-                expression=f"Error evaluating {input_data.expression}: {str(e)}"
-            )
+    # Replace ^ with ** for exponentiation
+    expr = expression.replace('^', '**')
+    
+    try:
+        # Evaluate the expression in a safe context
+        result = eval(expr, {"__builtins__": {}}, safe_dict)
+        return {"result": float(result), "expression": expression}
+    except Exception as e:
+        return {"result": float('nan'), "expression": f"Error evaluating {expression}: {str(e)}"}
+
+# Create a Tool from the function
+calculator_tool = Tool(
+    name="calculator",
+    description="Evaluates mathematical expressions",
+    function=calculator_function,
+    input_model=CalculateInput,
+    output_model=CalculateOutput
+)
