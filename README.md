@@ -1,5 +1,7 @@
 # Pydantic Heroku A2A Demo
 
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/dsouza-anush/pydantic-heroku-a2a)
+
 A demonstration project showing how to build agents using Pydantic AI with Heroku Inference for LLM capabilities, enabling agent-to-agent communication.
 
 ## Features
@@ -157,6 +159,42 @@ To run the Agent-to-Agent communication demo:
 
 ```bash
 python a2a_demo.py
+```
+
+## API Endpoints
+
+The demo exposes the following endpoints:
+
+- `GET /` - Root endpoint with API info
+- `GET /tools` - List available tools
+- `GET /test` - Simple test endpoint that verifies API functionality
+- `POST /query` - Query an agent with optional tools
+- `POST /a2a` - Demonstrate agent-to-agent communication
+
+### Example Requests
+
+**Basic Agent Query:**
+```bash
+curl -X POST https://your-app-name.herokuapp.com/query \
+    -H "Content-Type: application/json" \
+    -H "X-API-Key: your-api-key" \
+    -d '{"query": "What is 2+2?"}'
+```
+
+**Query with Specific Tool:**
+```bash
+curl -X POST https://your-app-name.herokuapp.com/query \
+    -H "Content-Type: application/json" \
+    -H "X-API-Key: your-api-key" \
+    -d '{"query": "Calculate 25*4", "tools": ["calculator"]}'
+```
+
+**Agent-to-Agent Communication:**
+```bash
+curl -X POST https://your-app-name.herokuapp.com/a2a \
+    -H "Content-Type: application/json" \
+    -H "X-API-Key: your-api-key" \
+    -d '{"query": "What is the A2A protocol?", "context": "I need a brief explanation."}'
 ```
 
 ## Running Tests

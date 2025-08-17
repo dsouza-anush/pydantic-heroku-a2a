@@ -19,11 +19,26 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+MANIFEST
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
 
 # Virtual Environment
 venv/
 ENV/
 .env
+env.bak/
+venv.bak/
 
 # IDE
 .idea/
@@ -33,3 +48,6 @@ ENV/
 
 # Logs
 *.log
+
+# OS specific
+.DS_Store

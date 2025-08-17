@@ -1,0 +1,29 @@
+{
+  "name": "Pydantic Heroku A2A Demo",
+  "description": "A demonstration of Agent-to-Agent communication using Pydantic AI and Heroku Inference",
+  "repository": "https://github.com/dsouza-anush/pydantic-heroku-a2a",
+  "logo": "https://raw.githubusercontent.com/dsouza-anush/pydantic-heroku-a2a/main/assets/logo.png",
+  "keywords": ["python", "fastapi", "ai", "agents", "pydantic", "heroku-inference"],
+  "env": {
+    "INFERENCE_API_KEY": {
+      "description": "Heroku Inference API key for accessing Claude models",
+      "required": true
+    },
+    "MODEL_ID": {
+      "description": "The model ID to use for inference",
+      "value": "claude-4-sonnet",
+      "required": true
+    },
+    "API_KEY": {
+      "description": "API key for securing your application endpoints",
+      "generator": "secret",
+      "required": true
+    }
+  },
+  "buildpacks": [
+    {
+      "url": "heroku/python"
+    }
+  ],
+  "addons": []
+}
