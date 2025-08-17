@@ -51,7 +51,8 @@ def create_heroku_agent(
     # Create and configure the agent
     agent = Agent(
         model=model,
-        tools=all_tools
+        tools=all_tools,
+        system_prompt="You are a helpful AI assistant with access to tools. When asked a question, think through the problem step by step and use the appropriate tools to find and provide accurate information."
     )
     
     return agent
