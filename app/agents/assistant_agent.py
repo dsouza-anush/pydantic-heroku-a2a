@@ -3,7 +3,7 @@ Implementation of a research assistant agent for A2A demo.
 """
 from typing import List, Optional
 from a2a import Agent, OpenAI, Tool
-from app.config import HEROKU_API_KEY, MODEL_ID, INFERENCE_URL
+from app.config import INFERENCE_API_KEY, MODEL_ID, INFERENCE_URL
 
 class ResearchAssistantAgent:
     """A research assistant agent that can communicate with our main agent."""
@@ -16,10 +16,10 @@ class ResearchAssistantAgent:
             api_key: The Heroku Inference API key
         """
         self.name = name
-        self.api_key = api_key or HEROKU_API_KEY
+        self.api_key = api_key or INFERENCE_API_KEY
         
         if not self.api_key:
-            raise ValueError("HEROKU_API_KEY must be provided")
+            raise ValueError("INFERENCE_API_KEY must be provided")
         
         # Create the OpenAI client for Heroku
         self.client = OpenAI(

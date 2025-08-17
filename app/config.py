@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Heroku API settings
-HEROKU_API_KEY = os.getenv("HEROKU_API_KEY")
+INFERENCE_API_KEY = os.getenv("INFERENCE_API_KEY")
 MODEL_ID = os.getenv("MODEL_ID", "claude-4-sonnet")
 INFERENCE_URL = os.getenv("INFERENCE_URL", "https://us.inference.heroku.com")
 
