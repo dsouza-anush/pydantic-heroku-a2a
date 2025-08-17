@@ -64,6 +64,36 @@ async def root():
         "available_tools": tool_registry.get_tool_names()
     }
 
+@app.get("/test")
+async def test():
+    """Test endpoint to verify API functionality."""
+    try:
+        # Create a simple agent with no tools
+        agent = create_heroku_agent(tools=[], use_registry_tools=False)
+        
+        # Set a simple prompt
+        prompt = "What is your name?"
+        
+        # Process the prompt
+        result = await agent.run(prompt)
+        
+        # Extract the response string from the result
+        if hasattr(result, 'output'):
+            response = result.output
+        else:
+            response = str(result)
+        
+        return {
+            "status": "success",
+            "prompt": prompt,
+            "response": response
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "error": str(e)
+        }
+
 @app.get("/tools")
 async def list_tools():
     """List available tools."""
