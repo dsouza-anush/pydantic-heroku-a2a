@@ -50,9 +50,7 @@ def research_function(topic: str, context: Optional[str] = None) -> Dict[str, An
 research_tool = Tool(
     name="research",
     description="Delegate research tasks to a specialized research agent",
-    function=research_function,
-    input=ResearchInput,
-    output=ResearchOutput
+    function=research_function
 )
 
 def demonstrate_a2a_communication(query: str, context: Optional[str] = None) -> Dict[str, Any]:

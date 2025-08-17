@@ -105,7 +105,5 @@ def search_function(query: str, max_results: int = 5) -> Dict[str, Any]:
 search_tool = Tool(
     name="search",
     description="Search for information on the web",
-    function=search_function,
-    input=SearchInput,
-    output=SearchOutput
+    function=search_function
 )

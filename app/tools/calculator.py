@@ -56,7 +56,5 @@ def calculator_function(expression: str) -> Dict[str, Any]:
 calculator_tool = Tool(
     name="calculator",
     description="Evaluates mathematical expressions",
-    function=calculator_function,
-    input=CalculateInput,
-    output=CalculateOutput
+    function=calculator_function
 )
