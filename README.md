@@ -1,6 +1,15 @@
 # Pydantic Heroku A2A Demo
 
+## Quick Deployment
+
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/dsouza-anush/pydantic-heroku-a2a)
+
+**One-click deployment:** Click the button above to deploy this application to your Heroku account instantly.
+
+**After deployment:**
+1. Heroku will prompt you to enter your Heroku Inference API key
+2. The app will generate a secure API key for you
+3. Once deployed, test the API using the examples below
 
 A demonstration project showing how to build agents using Pydantic AI with Heroku Inference for LLM capabilities, enabling agent-to-agent communication.
 
@@ -64,14 +73,28 @@ async def demonstrate_a2a_communication(query: str, context: Optional[str] = Non
 
 ### Testing A2A Communication
 
-You can test the A2A communication using the `/a2a` endpoint:
+#### Quick Test
+
+After deploying, you can quickly test if your application is working by accessing the test endpoint:
 
 ```bash
-curl -X POST https://pydantic-heroku-a2a-10c8e5734aae.herokuapp.com/a2a \
+curl -X GET https://your-app-name.herokuapp.com/test
+```
+
+This will return a simple response from the Heroku Inference API to verify everything is configured correctly.
+
+#### Testing Agent-to-Agent Communication
+
+You can test the full A2A communication using the `/a2a` endpoint:
+
+```bash
+curl -X POST https://your-app-name.herokuapp.com/a2a \
     -H "Content-Type: application/json" \
-    -H "X-API-Key: demo-api-key-123" \
+    -H "X-API-Key: your-api-key" \
     -d '{"query": "What is the Agent to Agent protocol?", "context": "I need a brief explanation."}'
 ```
+
+This will demonstrate how one agent processes the initial query and a second agent enhances the response.
 
 This demonstrates the core principle of the A2A protocol where agents can collaborate to produce better results than they could individually.
 
